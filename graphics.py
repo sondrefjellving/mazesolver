@@ -24,4 +24,18 @@ class Window:
         self.__running = False
     
         
-        
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+    
+class Line:
+    def __init__(self, start_p, end_p):
+        self.start = start_p
+        self.end = end_p
+    
+    def draw(self, canvas, fill_color):
+        canvas.create_line(
+            self.start.x, self.start.y, self.end.x, self.end.y, fill=fill_color, width=2
+            )
+        canvas.pack()
