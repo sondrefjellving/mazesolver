@@ -10,5 +10,6 @@ cell2.has_bottom_wall = False
 cell.draw()
 cell2.draw()
 cell3.draw()
+cell.draw_move(cell2, False)
 
 win.wait_for_close()
