@@ -22,6 +22,7 @@ class Maze:
 
             for r in range(self.__num_rows):
                 self.__draw_cell(c, r)
+        self.__break_entrance_and_exit()
 
         
     def __draw_cell(self, c, r):
