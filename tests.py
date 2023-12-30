@@ -19,7 +19,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(len(m2._Maze__cells[0]), num_rows)
         self.assertIsNone(m2._Maze__animate())
     
-    def test_maze_create_cells_valid(self):
+    def test_maze_create_cells3(self):
         num_cols = 3
         num_rows = 2
         m3 = Maze(0, 0, num_rows, num_cols, 30, 30)
