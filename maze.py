@@ -1,8 +1,9 @@
 from cell import Cell
 import time
+import random
 
 class Maze:
-    def __init__(self, x1, y1, num_rows, num_cols, cell_size_x, cell_size_y, win=None):
+    def __init__(self, x1, y1, num_rows, num_cols, cell_size_x, cell_size_y, win=None, seed=None):
         self.__x1 = x1
         self.__y1 = y1
         self.__num_rows = num_rows
@@ -11,6 +12,8 @@ class Maze:
         self.__cell_size_y = cell_size_y
         self.__win = win
         self.__cells = []
+        if seed:
+            random.seed(seed)
         self.__create_cells()
 
     def __create_cells(self):
@@ -23,6 +26,7 @@ class Maze:
             for r in range(self.__num_rows):
                 self.__draw_cell(c, r)
         self.__break_entrance_and_exit()
+        self.__break_walls_r(0, 0)
 
         
     def __draw_cell(self, c, r):
@@ -37,7 +41,7 @@ class Maze:
         if self.__win == None:
             return
         self.__win.redraw()
-        time.sleep(0.01)
+        time.sleep(0.001)
 
     def __break_entrance_and_exit(self):
         entrance = self.__cells[0][0]
@@ -47,6 +51,50 @@ class Maze:
         entrance.draw(entrance._Cell__x1, entrance._Cell__y1, entrance._Cell__x2, entrance._Cell__y2)
         exit.draw(exit._Cell__x1, exit._Cell__y1, exit._Cell__x2, exit._Cell__y2)
 
-
-
-
+    def __break_walls_r(self, c, r):
+        self.__cells[c][r].visited = True
+        while True:
+            unvisited = []
+            has_t_adjacent = True
+            has_r_adjacent = True
+            has_b_adjacent = True
+            has_l_adjacent = True
+            if c == 0:
+                has_l_adjacent = False
+            if r == 0:
+                has_t_adjacent = False
+            if c+1 >= self.__num_cols:
+                has_r_adjacent = False
+            if r+1 >= self.__num_rows:
+                has_b_adjacent = False
+            
+            if has_t_adjacent and self.__cells[c][r-1].visited == False:
+                unvisited.append((c, r-1))
+            if has_r_adjacent and self.__cells[c+1][r].visited == False:
+                unvisited.append((c+1, r))
+            if has_b_adjacent and self.__cells[c][r+1].visited == False:
+                unvisited.append((c, r+1))
+            if has_l_adjacent and self.__cells[c-1][r].visited == False:
+                unvisited.append((c-1, r))
+            
+            if len(unvisited) == 0:
+                self.__draw_cell(c, r)
+                return
+            
+            direction_index = random.randrange(len(unvisited))
+            choice = unvisited[direction_index]
+            
+            if choice[0] == c and choice[1] < r: # top
+                self.__cells[c][r].has_top_wall = False
+                self.__cells[c][r-1].has_bottom_wall = False
+            elif choice[0] == c and choice[1] > r: # bottom
+                self.__cells[c][r].has_bottom_wall = False
+                self.__cells[c][r+1].has_top_wall = False
+            elif choice[1] == r and choice[0] < c: # left
+                self.__cells[c][r].has_left_wall = False
+                self.__cells[c-1][r].has_right_wall = False
+            elif choice[1] == r and choice[0] > c: # right
+                self.__cells[c][r].has_right_wall = False
+                self.__cells[c+1][r].has_left_wall = False
+            
+            self.__break_walls_r(choice[0], choice[1])
