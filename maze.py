@@ -25,8 +25,10 @@ class Maze:
 
             for r in range(self.__num_rows):
                 self.__draw_cell(c, r)
+
         self.__break_entrance_and_exit()
         self.__break_walls_r(0, 0)
+        self.__reset_cells_visited()
 
         
     def __draw_cell(self, c, r):
@@ -41,7 +43,7 @@ class Maze:
         if self.__win == None:
             return
         self.__win.redraw()
-        time.sleep(0.001)
+        time.sleep(0.01)
 
     def __break_entrance_and_exit(self):
         entrance = self.__cells[0][0]
@@ -52,6 +54,7 @@ class Maze:
         exit.draw(exit._Cell__x1, exit._Cell__y1, exit._Cell__x2, exit._Cell__y2)
 
     def __break_walls_r(self, c, r):
+        
         self.__cells[c][r].visited = True
         while True:
             unvisited = []
@@ -98,3 +101,8 @@ class Maze:
                 self.__cells[c+1][r].has_left_wall = False
             
             self.__break_walls_r(choice[0], choice[1])
+
+    def __reset_cells_visited(self):
+        for col in self.__cells:
+            for row in col:
+                row.visited = False
