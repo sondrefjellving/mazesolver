@@ -43,6 +43,7 @@ class Cell:
         to_cell_center_x = to_cell.__x1 + (to_cell.__x2-to_cell.__x1)/2
         to_cell_center_y = to_cell.__y1 + (to_cell.__y2-to_cell.__y1)/2
 
+        
         move = Line(Point(from_cell_center_x, from_cell_center_y), Point(to_cell_center_x, to_cell_center_y))
         move_color = "gray" if undo else "red"
 

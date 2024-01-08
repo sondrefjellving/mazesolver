@@ -43,7 +43,7 @@ class Maze:
         if self.__win == None:
             return
         self.__win.redraw()
-        time.sleep(0.01)
+        time.sleep(0.1)
 
     def __break_entrance_and_exit(self):
         entrance = self.__cells[0][0]
@@ -106,3 +106,54 @@ class Maze:
         for col in self.__cells:
             for row in col:
                 row.visited = False
+
+    def solve(self):
+        return self.__solve_r(0,0)
+    
+    def __solve_r(self, c, r):
+        self.__animate()
+        self.__cells[c][r].visited = True
+        if self.__num_cols-1 == c and self.__num_rows-1 == r:
+            return True
+        
+        has_t_adjacent = True
+        has_r_adjacent = True
+        has_b_adjacent = True
+        has_l_adjacent = True
+
+        if c == 0:
+            has_l_adjacent = False
+        if r == 0:
+            has_t_adjacent = False
+        if c+1 >= self.__num_cols:
+            has_r_adjacent = False
+        if r+1 >= self.__num_rows:
+            has_b_adjacent = False
+        
+        if has_t_adjacent and not self.__cells[c][r-1].visited and not self.__cells[c][r].has_top_wall:
+            self.__cells[c][r].draw_move(self.__cells[c][r-1])
+            if self.__solve_r(c, r-1):
+                return True
+            else:
+                self.__cells[c][r].draw_move(self.__cells[c][r-1], True)
+        if has_r_adjacent and not self.__cells[c+1][r].visited and not self.__cells[c][r].has_right_wall:
+            self.__cells[c][r].draw_move(self.__cells[c+1][r])
+            if self.__solve_r(c+1, r):
+                return True
+            else:
+                self.__cells[c][r].draw_move(self.__cells[c+1][r], True)
+        if has_b_adjacent and not self.__cells[c][r+1].visited and not self.__cells[c][r].has_bottom_wall:
+            self.__cells[c][r].draw_move(self.__cells[c][r+1])
+            if self.__solve_r(c, r+1):
+                return True
+            else:
+                self.__cells[c][r].draw_move(self.__cells[c][r+1], True)
+        if has_l_adjacent and not self.__cells[c-1][r].visited and not self.__cells[c][r].has_left_wall:
+            self.__cells[c][r].draw_move(self.__cells[c-1][r])
+            if self.__solve_r(c-1, r):
+                return True
+            else:
+                self.__cells[c][r].draw_move(self.__cells[c-1][r], True)
+        return False
+        
+
